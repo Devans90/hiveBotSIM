@@ -85,10 +85,17 @@ class Hive(object):
         return True
 
     def get_unplayed_pieces(self, player):
+        """
+        return all the unplayed pieces of a player
+        player is a string either 'w' or 'b'
+        """
         return self.unplayedPieces[player]
 
 
     def get_active_player(self):
+        """
+        return the active player
+        """
         if self.turn <= 0:
             return None
 
@@ -98,11 +105,9 @@ class Hive(object):
         """returns the coordinates of the board limits."""
         return self.board.get_boundaries()
 
-
     def get_pieces(self, cell):
         """return the pieces that are in the cell (x, y)."""
         return self.piecesInCell.get(cell, [])
-
 
     def locate(self, pieceName):
         """
@@ -115,7 +120,6 @@ class Hive(object):
             res = pp['cell']
 
         return res
-
 
     def move_piece(self, piece, refPiece, refDirection):
         """
@@ -146,7 +150,6 @@ class Hive(object):
 
         return targetCell
 
-
     def place_piece(self, piece, refPieceName=None, refDirection=None):
         """
         Place a piece on the playing board.
@@ -167,12 +170,11 @@ class Hive(object):
 
         # places the piece at the target location
         self.board.resize(targetCell)
-        self.playedPieces[str(piece)] = {'piece': piece, 'cell': targetCell}
+        self.playedPieces[str(piece)] = {'piece': piece, 'cell': targetCell, 'team': piece.color}
         pic = self.piecesInCell.setdefault(targetCell, [])
         pic.append(str(piece))
 
         return targetCell
-
 
     def check_victory(self):
         """
@@ -205,7 +207,6 @@ class Hive(object):
             res = self.DRAW
 
         return res
-
 
     def _validate_turn(self, piece, action):
         """
@@ -243,9 +244,8 @@ class Hive(object):
                     return False
         return True
 
-
     def _validate_move_piece(self, moving_piece, targetCell):
-        # check if the piece has been placed
+        """validates if the peice has been placed"""
         pp = self.playedPieces.get(str(moving_piece))
         if pp is None:
             print("piece was not played yet")
@@ -272,7 +272,6 @@ class Hive(object):
         return validate_fun_map[moving_piece.kind](
             pp['piece'], pp['cell'], targetCell
         )
-
 
     def _validate_place_piece(self, piece, targetCell):
         """
@@ -311,11 +310,9 @@ class Hive(object):
 
         return res
 
-
     def _is_cell_free(self, cell):
         pic = self.piecesInCell.get(cell, [])
         return len(pic) == 0
-
 
     def _occupied_surroundings(self, cell):
         """
@@ -323,7 +320,6 @@ class Hive(object):
         """
         surroundings = self.board.get_surrounding(cell)
         return [c for c in surroundings if not self._is_cell_free(c)]
-
 
     # TODO: rename/remove this function.
     def _poc2cell(self, refPiece, pointOfContact):
